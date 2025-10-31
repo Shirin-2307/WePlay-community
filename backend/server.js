@@ -1,10 +1,35 @@
 require('dotenv').config();
 const express = require('express');
+
 const cors = require('cors');
+
+const allowedList = (process.env.ALLOWED_ORIGIN || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedList.includes(origin)) return callback(null, true);
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    return callback(new Error('Not allowed by CORS: ' + origin));
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
+
+
+
 const connectDB = require('./src/db');
 
 const app = express();
-app.use(cors({ origin: process.env.ALLOWED_ORIGIN?.split(',') || '*' }));
+
 app.use(express.json());
 
 app.get('/', (_, res) => res.send('🎾 SportConnect API is running!'));
