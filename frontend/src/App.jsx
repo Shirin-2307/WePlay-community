@@ -5,6 +5,12 @@ import Register from './pages/Register'
 import Activities from './pages/Activities'
 import NewActivity from './pages/NewActivity'
 
+import Events from './pages/Events';
+import Home from './pages/Home';
+<><Route path="./events" element={<Events />} /><Route path="/home" element={<Home />} /></>
+
+
+
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" replace />;
